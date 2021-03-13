@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>ToDoList jquery</title>
+    <script src="./jquery.html"></script>
+</head>
+<body>
+    <div>
+                <input type="text" id="input">
+                <button id="btn">提交</button>
+                <ul id="list">
+                </ul>
+    </div>
+    <script>
+        // M（模型层，暂时没有） V（视图，网页div显示） 
+        // P（控制器script对逻辑进行处理，获取M层的数据，逻辑处理后，通过DOM操作改变视图）
+        function Page() {
+        }
+        $.extend(Page.prototype, {
+            init: function() {
+                this.bindEvents()
+            },
+            bindEvents: function() {
+                var btn = $('#btn');
+                btn.on('click', $.proxy(this.handleBtnClick,this))
+            },
+            handleBtnClick: function() {
+                var inputElem = $("#input");
+                var inputValue = inputElem.val();
+                var ulElem = $("#list");
+                ulElem.append('<li>' + inputValue + '</li>');
+                inputElem.val('');
+            }
+        })
+    </script>
+</body>
+</html>

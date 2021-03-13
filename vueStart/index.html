@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>ToDoList</title>
+    <script src="./vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- v-model双向绑定 -->
+        <input type="text" v-model="inputValue">
+        <button v-on:click="submit">提交</button>
+        <ul >
+            <!-- <li v-for="(content, index) in contents" :key="index">{{content}}</li> -->
+        <todo-item v-bind:contenta="item" v-for="(item, index) in contents" :key="index"></todo-item>
+        </ul>
+    </div>
+    <script>
+        // Vue.component是Vue的全局组件
+      Vue.component("TodoItem", {
+          props: ['contenta'],
+          template: "<li>{{contenta}}</li>"
+      })
+      // vue的局部组件
+      var TodoItem = {
+        props: ['contenta'],
+        template: "<li>{{contenta}}</li>"
+      }
+      var app = new Vue({
+          el: '#app',
+          // 局部组件需要注册
+          components: {
+              TodoItem: TodoItem
+          },
+          data: {
+              contents: ['第一篇学习课程','第二篇学习课程'],
+              inputValue: ''
+          },
+          methods: {
+              submit () {
+                  this.contents.push(this.inputValue)
+                  this.inputValue = ''
+              }
+          }
+     })
+    </script>
+</body>
+</html>
