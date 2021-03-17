@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title></title>
+    <script src='./vue.js'></script>
+    <style>
+        .sizeOne {
+            color:red
+        }
+    </style>
+</head>
+<body>
+    <div id = "app">
+    <!-- <div :class = "{ sizeOne: isSizeOne }"  -->
+    <div
+        :class = "[isSizeOne]"
+        @click = "setSizeOne">
+        hello world
+    </div>
+    <div v-if = "show" v-if = "v-if">
+    用户名：<input type="text" key = "user"></div>
+    <div v-else>密码：<input type="text" key = "password"></div>
+</div>
+    <script>
+        var vm = new Vue ({
+            el: "#app",
+            data: {
+                isSizeOne: "",
+                message: "hello world",
+                show: false
+            },
+            methods: {
+                setSizeOne () {
+                //    if (this.isSizeOne === "") {
+                //        this.isSizeOne = "sizeOne"
+                //    } else {
+                //        this.isSizeOne = ""
+                //    }
+                    this.isSizeOne = (this.isSizeOne === "") ? "sizeOne" : ""
+                }
+            }
+        }) 
+    </script>
+</body>
+</html>
