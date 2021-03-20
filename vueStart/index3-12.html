@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>vue第三章综合练习</title>
+    <script src = "vue.js"></script>
+</head>
+<body>
+    <!-- 输入内容后提交，可以进行删除、编辑、class样式修改 -->
+    <!-- 设置显示、隐藏按钮，如果是被勾选就显示，不被勾选就不显示 -->
+    <!-- 一个组件，可以对输入的值进行自动计算 -->
+    <div id = "app">
+        <div> 姓名：<input v-model.lazy.trim="fullName" type="text" /></div>
+        <div> 语文：<input v-model.lazy.trim.number="chinese" type="text" /></div>
+        <div> 数学：<input v-model.lazy.trim.number="mathematics" type="text" /></div>
+        <button @click = 'submitMessage(fullName, chinese, mathematics)'>提交</button>
+        <div v-for="(item, index) in lists" :key="index">
+            姓名：{{item.fullName}} | 语文： {{item.chinese}} | 数学： {{item.mathematics}} | 综合成绩： {{item.fullResult}}
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                fullName: '',
+                chinese: '',
+                mathematics: '',
+                lists: []
+            },
+            methods: {
+                submitMessage(fullName, chinese, mathematics) {
+                    let list = {}
+                    list.fullName = fullName
+                    list.chinese = chinese
+                    list.mathematics = mathematics
+                    list.fullResult = this.fullResult
+                    this.lists.push(list)
+                }
+            },
+            computed: {
+                fullResult () {
+                    return this.chinese + this.mathematics
+                }
+            }
+        })
+    </script>
+</body>
+</html>

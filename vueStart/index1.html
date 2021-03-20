@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <script src="./vue.js">
+    </script>
+    <title></title>
+</head>
+<body>
+    <div id="app">
+      <div>{{fullName}}</div>
+      <input type="text" v-model="msg">
+      <button @click="addclick">添加</button>
+      <cop-item :content="item" :indexd="index" @del="itemDelete" v-for="(item, index) in items" :key="index"></cop-item>  
+    </div>
+    <script>
+        var CopItem = {
+            props: ['content', 'indexd'],
+            template: "<li @click='itemclick'>{{content}}</li>",
+            methods: {
+                itemclick () {
+                    this.$emit("del", this.indexd)
+                }
+            }
+        }
+        var vm = new Vue({
+            el: '#app',
+            components: {
+                CopItem: CopItem,
+            },
+            data: {
+                firstName: "hello",
+                lastName: " world",
+                msg: '',
+                items: []
+            },
+            methods: {
+                addclick () {
+                    this.items.push(this.msg)
+                    this.msg = ''
+                },
+                itemDelete (indexd) {
+                    this.items.splice(indexd, 1)
+                }
+            },
+            computed: {
+                fullName () {
+                    console.log("计算了一次")
+                    return this.firstName + this.lastName
+                }
+            }
+        })
+    </script>
+</body>
+</html>
