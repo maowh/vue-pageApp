@@ -4,37 +4,89 @@
     <meta charset='UTF-8'>
     <title>vue第三章综合练习</title>
     <script src = "vue.js"></script>
+    <style>
+        .blueStyle {
+            color: blue;
+        }
+    </style>
 </head>
 <body>
     <!-- 输入内容后提交，可以进行删除、编辑、class样式修改 -->
     <!-- 设置显示、隐藏按钮，如果是被勾选就显示，不被勾选就不显示 -->
     <!-- 一个组件，可以对输入的值进行自动计算 -->
+    <!-- 不及格的分数不显示，隐藏 -->
     <div id = "app">
         <div> 姓名：<input v-model.lazy.trim="fullName" type="text" /></div>
         <div> 语文：<input v-model.lazy.trim.number="chinese" type="text" /></div>
         <div> 数学：<input v-model.lazy.trim.number="mathematics" type="text" /></div>
         <button @click = 'submitMessage(fullName, chinese, mathematics)'>提交</button>
-        <div v-for="(item, index) in lists" :key="index">
-            姓名：{{item.fullName}} | 语文： {{item.chinese}} | 数学： {{item.mathematics}} | 综合成绩： {{item.fullResult}}
-        </div>
+            <button v-if="isShow" @click="hideNotPass">{{message}}</button>
+            <button v-else="isShow" @click="hideNotPass">{{message}}</button>
+        <ul >
+            <li v-for="(item, index) in lists" :key="item.id" :class="{blueStyle:isColor[item.id]}">
+             编号：{{item.id}} | 
+             姓名：{{item.fullName}} | 
+             语文： {{item.chinese}} | 
+             数学： {{item.mathematics}} | 
+             综合成绩： {{item.fullResult}} 
+             <button @click = "delItem(item.id)">删除</button>
+             是否蓝色：<input type="checkbox" v-model="isColor[item.id]">
+             </li>
+        </ul>
     </div>
     <script>
         var vm = new Vue({
             el: '#app',
             data: {
+                message:'显示及格的总成绩',
+                isShow: true,
+                current: false,
+                isColor: [false],
                 fullName: '',
                 chinese: '',
                 mathematics: '',
-                lists: []
+                lists: [],
+                saveLists: []
             },
             methods: {
                 submitMessage(fullName, chinese, mathematics) {
                     let list = {}
+                    if (this.lists.slice(-1)[0] === undefined) 
+                    {
+                        list.id = 1
+                    } else {
+                        list.id = this.lists.slice(-1)[0].id + 1
+                    }
                     list.fullName = fullName
                     list.chinese = chinese
                     list.mathematics = mathematics
                     list.fullResult = this.fullResult
                     this.lists.push(list)
+                },
+                delItem (id) {
+                    for (let i=0; i<this.lists.length; i++) {
+                        if ( this.lists[i].id === id ) {
+                            this.lists.splice(i, 1)
+                            break
+                        }
+                    }
+                },
+                hideNotPass () {
+                    this.isShow =!this.isShow
+                    if (this.isShow) {
+                        this.message = '显示及格的总成绩'
+                        this.lists =  this.saveLists
+                    } else {
+                        this.message = '显示所有的总成绩'
+                        let tmpLists = []
+                        for (let i = 0; i<this.lists.length; i++) {
+                            if (this.lists[i].fullResult > 60) {
+                                tmpLists.push(this.lists[i])
+                            }
+                        }
+                        this.saveLists = this.lists
+                        this.lists = tmpLists
+                    }
                 }
             },
             computed: {
