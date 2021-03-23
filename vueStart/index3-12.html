@@ -23,7 +23,7 @@
             <button v-if="isShow" @click="hideNotPass">{{message}}</button>
             <button v-else="isShow" @click="hideNotPass">{{message}}</button>
         <ul >
-            <li v-for="(item, index) in lists" :key="item.id" :class="{blueStyle:isColor[item.id]}">
+            <!-- <li v-for="(item, index) in lists" :key="item.id" :class="{blueStyle:isColor[item.id]}">
              编号：{{item.id}} | 
              姓名：{{item.fullName}} | 
              语文： {{item.chinese}} | 
@@ -31,10 +31,36 @@
              综合成绩： {{item.fullResult}} 
              <button @click = "delItem(item.id)">删除</button>
              是否蓝色：<input type="checkbox" v-model="isColor[item.id]">
-             </li>
+             </li> -->
+             <todo-item v-for="(item, index) in lists" 
+                        :key="item.id"
+                        :idz="item.id"
+                        :item="item"
+                        :iscolor="isColor"
+                        @delete="delItem"
+                        :class="{blueStyle:isColor[item.id]}">
+             </todo-item>
         </ul>
     </div>
     <script>
+        var TodoItem = {
+            props: ['idz','item','iscolor'],
+            template: "<li>"+
+                "编号：{{item.id}} | "+
+                "姓名：{{item.fullName}} | "+
+                "语文： {{item.chinese}} | "+
+                "数学： {{item.mathematics}} | "+
+                "综合成绩： {{item.fullResult}} "+
+                "<button @click='delItem(item.id)'>删除</button>"+
+                "是否蓝色：<input type='checkbox' v-model='iscolor[item.id]'>"+
+            "</li>",
+            methods: {
+                delItem (id) {
+                    console.log(id)
+                    this.$emit('delete', id)
+                }
+            }
+        }
         var vm = new Vue({
             el: '#app',
             data: {
@@ -48,22 +74,29 @@
                 lists: [],
                 saveLists: []
             },
+            components: {
+                TodoItem: TodoItem
+            },
             methods: {
                 submitMessage(fullName, chinese, mathematics) {
                     let list = {}
                     if (this.lists.slice(-1)[0] === undefined) 
                     {
                         list.id = 1
+                        console.log(this.lists)
                     } else {
                         list.id = this.lists.slice(-1)[0].id + 1
+                        console.log(this.lists)
                     }
                     list.fullName = fullName
                     list.chinese = chinese
                     list.mathematics = mathematics
                     list.fullResult = this.fullResult
                     this.lists.push(list)
+                    console.log(this.lists)
                 },
                 delItem (id) {
+                    console.log(id)
                     for (let i=0; i<this.lists.length; i++) {
                         if ( this.lists[i].id === id ) {
                             this.lists.splice(i, 1)
