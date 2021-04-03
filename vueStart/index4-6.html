@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+    <script src="./vue.js"></script>
+  </head>
+  <body>
+    <div id="vm">
+      <ul>
+        <li is="table-dom" @addbtn="addNumber" :codeid="2">
+          <h2>前面{{codeNumber}}</h2>
+        </li>
+        <li is="table-dom" @addbtn="addNumber" :codeid="2"><h2>后面</h2></li>
+      </ul>
+      <div-dom>
+        <div slot="header">前面</div>
+        <div slot="footer">后面</div>
+      </div-dom>
+      <div-dom> </div-dom>
+      <div-dom> </div-dom>
+    </div>
+    <script>
+      Vue.prototype.bus = new Vue()
+      var tableDom = {
+        props: ['codeid'],
+        data() {
+          return { number: this.codeid }
+        },
+        template: "<li @click='handleBtn'><slot></slot><p>测试单元格{{number}}</p></li>",
+        methods: {
+          handleBtn() {
+            this.$emit('addbtn', ++this.number)
+          },
+        },
+      }
+      var divDom = {
+        props: {},
+        template: `<div><slot name='header'></slot><div><div>测试单元格</div></div><slot name='footer'></slot></div>`,
+      }
+      var vm = new Vue({
+        el: '#vm',
+        data: {
+          codeNumber: 0,
+        },
+        components: {
+          TableDom: tableDom,
+          DivDom: divDom,
+        },
+        methods: {
+          addNumber(value) {
+            this.codeNumber = value
+          },
+        },
+      })
+    </script>
+  </body>
+</html>
