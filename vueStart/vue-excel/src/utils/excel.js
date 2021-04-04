@@ -31,12 +31,32 @@ export function readExcelToJson(file) {
  * @param {*} filename  文件名后缀为.xlsx
  */
 export function saveJsonToExcel(data, filename) {
-  let sheet = XLSX.utils.json_to_sheet(data)
-
-  let workbook = {
-    SheetNames: ['sheet1'],
-    Sheets: {
-      sheet1: sheet
+  let sheet1
+  let sheet2
+  let sheet3
+  let sheet
+  let workbook
+  if (data.length > 1) {
+    sheet1 = XLSX.utils.json_to_sheet(data[0])
+    sheet2 = XLSX.utils.json_to_sheet(data[1])
+    sheet3 = XLSX.utils.json_to_sheet(data[2])
+    workbook = {
+      SheetNames: ['Division', 'Position', 'Employee'],
+      Sheets: {
+        Division: sheet1,
+        Position: sheet2,
+        Employee: sheet3
+      }
+    }
+  } else {
+    console.log('1')
+    console.log(data.length)
+    sheet = XLSX.utils.json_to_sheet(data[0])
+    workbook = {
+      SheetNames: ['sheet1'],
+      Sheets: {
+        sheet1: sheet
+      }
     }
   }
 
