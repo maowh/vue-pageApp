@@ -31,6 +31,19 @@
           {{ item.客户编码 }}
         </li>
       </ul>
+      <div>
+        <p>选择导出网员类型</p>
+        <el-select @change="selectChange" v-model="selectData">
+          <el-option disabled>---请选择---</el-option>
+          <el-option
+            v-for="(item, index) in excelRadios"
+            :key="index"
+            :label="item"
+            :value="item"
+          ></el-option
+        ></el-select>
+      </div>
+
       <p>输入CRM账号密码：</p>
       <div>
         <el-input style="width:100px" v-model="excelSelectPwd"></el-input>
@@ -60,6 +73,8 @@ export default {
       file: null,
       excelSelectPwd: '',
       excelSelect: '',
+      excelRadios: ['经销商', '服务站', '配件专营店'],
+      selectData: '',
       excelSingleData: {},
       JDivision: 0,
       JPosition: 0,
@@ -183,12 +198,15 @@ export default {
         this.excelSingleData.客户名称 + nowDate + '.xlsx'
       )
     },
+    selectChange(id) {
+      this.selectData = id
+    },
     handleSelect() {
       this.excelSingleData = {}
       this.excelSingleData = this.tableData.find(
         item => item.客户编码 === Number(this.excelSelect)
       )
-      if (this.excelSingleData !== undefined) {
+      if (this.excelSingleData !== undefined || this.excelSingleData !== null) {
         this.excelSelectList.push(this.excelSingleData)
         for (let i = 0; i < 2; i++) {
           this.excelDivisionData = {}
@@ -333,10 +351,10 @@ export default {
           // for (let i = 0; i < this.excelUserPwdTmp.length; i++) {
           //   delete this.excelUserPwdTmp[i].职责
           // }
-          this.excelUserPwdTmp.forEach(value => {
-            value['密码'] = this.excelSelectPwd
-            // this.$set(value, '密码', this.excelSelectPwd)
-          })
+          // 添加密码字段
+          // this.excelUserPwdTmp.forEach(value => {
+          //   value['密码'] = this.excelSelectPwd
+          // })
           this.excelUserPwd.push(this.excelUserPwdTmp)
           this.excelUserPwdTmp = []
           console.log(this.excelUserPwd)
