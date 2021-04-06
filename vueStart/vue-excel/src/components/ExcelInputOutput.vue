@@ -34,7 +34,7 @@
       <div>
         <p>选择导出网员类型</p>
         <el-select @change="selectChange" v-model="selectData">
-          <el-option disabled>---请选择---</el-option>
+          <!-- <el-option disabled>---请选择---</el-option> -->
           <el-option
             v-for="(item, index) in excelRadios"
             :key="index"
@@ -269,7 +269,6 @@ export default {
             'CD' +
             this.excelSingleData.客户编码 +
             this.excelSelectDataAccount[i]
-          this.excelEmployeeData.职位 = this.excelSelectDataPosition[i]
           switch (i) {
             case 0:
               this.excelEmployeeData.职责 = this.EmployeeName[i]
@@ -303,7 +302,6 @@ export default {
               this.excelEmployeeData.姓名 =
                 this.excelSingleData.客户名称 + this.excelSelectDataName[i - 2]
               this.excelEmployeeData.职责 = this.EmployeeName[i - 2]
-              this.excelEmployeeData.职位 = this.excelSelectDataPosition[i - 1]
               this.excelEmployeeData.用户ID =
                 'CD' +
                 this.excelSingleData.客户编码 +
@@ -313,11 +311,19 @@ export default {
               this.excelEmployeeData.姓名 =
                 this.excelSingleData.客户名称 + this.excelSelectDataName[i - 2]
               this.excelEmployeeData.职责 = this.EmployeeName[i - 2]
-              this.excelEmployeeData.职位 = this.excelSelectDataPosition[i - 1]
               this.excelEmployeeData.用户ID =
                 'CD' +
                 this.excelSingleData.客户编码 +
                 this.excelSelectDataAccount[i - 2]
+              break
+          }
+          this.excelEmployeeData.职位 = this.excelSelectDataPosition[i]
+          switch (i) {
+            case 7:
+              this.excelEmployeeData.职位 = this.excelSelectDataPosition[i - 1]
+              break
+            case 8:
+              this.excelEmployeeData.职位 = this.excelSelectDataPosition[i - 1]
               break
           }
           // this.excelEmployeeData.职责 = this.EmployeeName[i]
@@ -357,8 +363,6 @@ export default {
           // })
           this.excelUserPwd.push(this.excelUserPwdTmp)
           this.excelUserPwdTmp = []
-          console.log(this.excelUserPwd)
-          console.log(this.Employee)
         } else {
           alert('没有选中导出给网员的信息！')
         }
