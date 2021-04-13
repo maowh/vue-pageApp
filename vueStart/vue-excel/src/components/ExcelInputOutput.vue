@@ -358,9 +358,9 @@ export default {
           //   delete this.excelUserPwdTmp[i].职责
           // }
           // 添加密码字段
-          // this.excelUserPwdTmp.forEach(value => {
-          //   value['密码'] = this.excelSelectPwd
-          // })
+          this.excelUserPwdTmp.forEach(value => {
+            value['密码'] = this.excelSelectPwd
+          })
           this.excelUserPwd.push(this.excelUserPwdTmp)
           this.excelUserPwdTmp = []
         } else {
