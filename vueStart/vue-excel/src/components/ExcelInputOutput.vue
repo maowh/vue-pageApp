@@ -20,7 +20,7 @@
       >
     </div>
     <div style="display:flex;">
-      <p>选择需要导出的数据</p>
+      <p>选择SAP编码</p>
       <div>
         <el-input style="width:100px" v-model="excelSelect"></el-input>
         <el-button type="primary" @click="handleSelectDealer"
@@ -323,9 +323,18 @@ export default {
     },
     handleSelectStation() {
       this.excelSingleData = {}
-      this.excelSingleData = this.tableData.find(
-        item => item.客户编码 === Number(this.excelSelect)
-      )
+      this.tableData.filter(value => {
+        if (value.客户编码 === Number(this.excelSelect)) {
+          if (value.服务代码 !== '') {
+            this.excelSingleData = value
+            return true
+          }
+        }
+      })
+      if (String(this.excelSingleData.服务代码).length < 4) {
+        this.excelSingleData.服务代码 = '0' + this.excelSingleData.服务代码
+      }
+
       if (this.excelSingleData !== undefined && this.excelSingleData !== null) {
         this.excelSelectList.push(this.excelSingleData)
         for (let i = 0; i < StationDepartmentList.length; i++) {
@@ -333,14 +342,47 @@ export default {
           this.DivisionName.序号 = this.JDivision + 1
           this.JDivision = this.JDivision + 1
           this.DivisionName.部门名称 = StationDepartmentList[i]
-          this.DivisionName.场所 = this.excelSingleData.客户编码
-          this.DivisionName.父部门名称 = this.excelSingleData.客户名称
-          this.DivisionName.父部门组织 = this.excelSingleData.客户名称
+          this.DivisionName.场所 = this.excelSingleData.客户编码 + 'FW'
+          this.DivisionName.父部门名称 = this.excelSingleData.客户名称 + 'FW'
+          this.DivisionName.父部门组织 = this.excelSingleData.客户名称 + 'FW'
           this.DivisionName.部门类型 = '服务站部门'
           this.Division.push(this.DivisionName)
         }
         if (this.partsChecked) {
           // 配件专营店账号权限
+          this.PositionName = {}
+          this.PositionName.序号 = this.JPosition + 1
+          this.JPosition = this.JPosition + 1
+          this.PositionName.部门 = StationDepartmentList[1]
+          this.PositionName.部门的组织 = this.excelSingleData.客户名称 + 'FW'
+          this.PositionName.职位 = StationPost[10]
+          this.PositionName.父职位 = ''
+          this.PositionName.父职位组织 = this.excelSingleData.客户名称 + 'FW'
+          this.PositionName.职位类型 = StationPositionList[6]
+          this.Position.push(this.PositionName)
+
+          this.EmployeeName = {}
+          this.EmployeeName.序号 = this.JEmployee + 1
+          this.JEmployee = this.JEmployee + 1
+          this.EmployeeName.姓名 =
+            this.excelSingleData.客户名称 + StationNameLast[10]
+          this.EmployeeName.用户ID =
+            StationAccountLast[10] + this.excelSingleData.服务代码
+          this.EmployeeName.职责 = StationDutyList[10]
+          this.EmployeeName.职位 = StationPost[10]
+          this.EmployeeName.组织 = this.excelSingleData.客户名称 + 'FW'
+          this.Employee.push(this.EmployeeName)
+          this.excelUserPwdTmp.push(this.EmployeeName)
+
+          this.NewAccountName = {}
+          this.NewAccountName.域帐号名 =
+            StationAccountLast[10] + this.excelSingleData.服务代码
+          this.NewAccountName.姓名 =
+            this.excelSingleData.客户名称 + StationNameLast[10]
+          this.NewAccountName.单位名称 = this.excelSingleData.客户名称
+          this.NewAccountName.所属组织代码 =
+            '000' + this.excelSingleData.客户编码
+          this.excelDataSaleStandard.push(this.NewAccountName)
         } else {
           // 服务站账号权限
           for (let i = 0; i < StationPost.length; i++) {
@@ -380,19 +422,19 @@ export default {
               '000' + this.excelSingleData.客户编码
             this.excelDataSaleStandard.push(this.NewAccountName)
           }
-          if (this.excelUserPwdTmp.length > 0) {
-            // for (let i = 0; i < this.excelUserPwdTmp.length; i++) {
-            //   delete this.excelUserPwdTmp[i].职责
-            // }
-            // 添加密码字段
-            // this.excelUserPwdTmp.forEach(value => {
-            //   value['密码'] = this.excelSelectPwd
-            // })
-            this.excelUserPwd.push(this.excelUserPwdTmp)
-            this.excelUserPwdTmp = []
-          } else {
-            alert('没有选中导出给网员的信息！')
-          }
+        }
+        if (this.excelUserPwdTmp.length > 0) {
+          // for (let i = 0; i < this.excelUserPwdTmp.length; i++) {
+          //   delete this.excelUserPwdTmp[i].职责
+          // }
+          // 添加密码字段
+          // this.excelUserPwdTmp.forEach(value => {
+          //   value['密码'] = this.excelSelectPwd
+          // })
+          this.excelUserPwd.push(this.excelUserPwdTmp)
+          this.excelUserPwdTmp = []
+        } else {
+          alert('没有选中导出给网员的信息！')
         }
       } else {
         alert('客户编码不在列表中，请输入正确客户编码！')
