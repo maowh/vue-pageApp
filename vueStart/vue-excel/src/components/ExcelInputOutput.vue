@@ -23,7 +23,12 @@
       <p>选择需要导出的数据</p>
       <div>
         <el-input style="width:100px" v-model="excelSelect"></el-input>
-        <el-button type="primary" @click="handleSelect">添加导出单位</el-button>
+        <el-button type="primary" @click="handleSelectDealer"
+          >添加经销商导出单位</el-button
+        >
+        <el-button type="primary" @click="handleSelectStation"
+          >添加服务站导出单位</el-button
+        ><el-checkbox v-model="partsChecked">是否配件专营店</el-checkbox>
       </div>
 
       <ul>
@@ -66,6 +71,29 @@
 import { readExcelToJson, saveJsonToExcel } from '../utils/excel'
 import Moment from 'moment'
 
+import {
+  DivisionName,
+  PositionName,
+  EmployeeName,
+  NewAccountName,
+  DealerAccountLast,
+  DealerPost,
+  DealerNameLast,
+  StationAccountLast,
+  StationPost,
+  StationNameLast
+} from '../data/account'
+import {
+  DealerDepartmentList,
+  DealerPositionList,
+  DealerDutyList
+} from '../data/dealer'
+import {
+  StationDepartmentList,
+  StationPositionList,
+  StationDutyList
+} from '../data/station'
+
 export default {
   name: 'excel-input-output',
   data() {
@@ -75,86 +103,21 @@ export default {
       excelSelect: '',
       excelRadios: ['经销商', '服务站', '配件专营店'],
       selectData: '',
+      partsChecked: '',
       excelSingleData: {},
       JDivision: 0,
       JPosition: 0,
       JEmployee: 0,
       Division: [],
-      DivisionName: ['销售部', '财务部'],
-      excelDivisionData: {
-        序号: '',
-        部门名称: '',
-        场所: '',
-        父部门名称: '',
-        父部门组织: '',
-        部门类型: ''
-      },
+      DivisionName: DivisionName,
+      PositionName: PositionName,
+      EmployeeName: EmployeeName,
+      NewAccountName: NewAccountName,
       Position: [],
-      PositionName: [
-        '总经理',
-        '销售经理',
-        '财务经理',
-        '计划员',
-        '库管人员',
-        '培训师'
-      ],
-      excelPositionData: {
-        序号: '',
-        部门: '',
-        部门的组织: '',
-        职位: '',
-        父职位: '',
-        父职位组织: '',
-        职位类型: ''
-      },
       Employee: [],
-      EmployeeName: [
-        'DFL Dealer CEO New',
-        'DFL Dealer Sales Manager',
-        'DFL Dealer Finance Manager',
-        'DFL Dealer Plan&Order Agent',
-        'DFL Dealer Inventory Super Admin',
-        'DFL VL Dealer',
-        'DFLII Service Vehicles Trainers'
-      ],
-      excelEmployeeData: {
-        序号: '',
-        姓名: '',
-        用户ID: '',
-        职责: '',
-        职位: '',
-        组织: ''
-      },
       AccountNumber: [],
       excelSelectList: [],
       excelDataSaleStandard: [],
-      excelSelectData: {
-        域帐号名: '',
-        姓名: '',
-        职务: '',
-        单位名称: '',
-        所属组织代码: ''
-      },
-      excelSelectDataAccount: ['M00', 'M01', 'M40', 'F01', 'P01', 'W01', 'L01'],
-      excelSelectDataName: [
-        '总经理',
-        '分管销售副总经理',
-        '重型牵引车品系经理',
-        '财务经理',
-        '计划员',
-        '仓库保管员',
-        '培训师'
-      ],
-      excelSelectDataPosition: [
-        '总经理',
-        '分管销售副总经理01',
-        '重型牵引车品系经理01',
-        '财务经理01',
-        '计划员01',
-        '仓库保管员01',
-        '信息员01',
-        '培训师'
-      ],
       excelUserPwd: [],
       excelUserPwdTmp: [],
       tableData: [],
@@ -169,6 +132,7 @@ export default {
       this.file = file
       readExcelToJson(file).then(res => {
         this.tableData = res
+        // console.log(res)
       })
     },
 
@@ -201,7 +165,7 @@ export default {
     selectChange(id) {
       this.selectData = id
     },
-    handleSelect() {
+    handleSelectDealer() {
       this.excelSingleData = {}
       this.excelSingleData = this.tableData.find(
         item => item.客户编码 === Number(this.excelSelect)
@@ -209,147 +173,134 @@ export default {
       if (this.excelSingleData !== undefined || this.excelSingleData !== null) {
         this.excelSelectList.push(this.excelSingleData)
         for (let i = 0; i < 2; i++) {
-          this.excelDivisionData = {}
-          this.excelDivisionData.序号 = this.JDivision + 1
+          this.DivisionName = {}
+          this.DivisionName.序号 = this.JDivision + 1
           this.JDivision = this.JDivision + 1
-          this.excelDivisionData.部门名称 = this.DivisionName[i]
-          this.excelDivisionData.场所 = this.excelSingleData.客户编码
-          this.excelDivisionData.父部门名称 = this.excelSingleData.客户名称
-          this.excelDivisionData.父部门组织 = this.excelSingleData.客户名称
-          this.excelDivisionData.部门类型 = '经销商部门'
-          this.Division.push(this.excelDivisionData)
+          this.DivisionName.部门名称 = DealerDepartmentList[i]
+          this.DivisionName.场所 = this.excelSingleData.客户编码
+          this.DivisionName.父部门名称 = this.excelSingleData.客户名称
+          this.DivisionName.父部门组织 = this.excelSingleData.客户名称
+          this.DivisionName.部门类型 = '经销商部门'
+          this.Division.push(this.DivisionName)
         }
         for (let i = 0; i < 8; i++) {
-          this.excelPositionData = {}
-          this.excelPositionData.序号 = this.JPosition + 1
+          this.PositionName = {}
+          this.PositionName.序号 = this.JPosition + 1
           this.JPosition = this.JPosition + 1
-          this.excelPositionData.部门 = this.DivisionName[0]
-          this.excelPositionData.部门的组织 = this.excelSingleData.客户名称
-          this.excelPositionData.职位 = this.excelSelectDataPosition[i]
-          this.excelPositionData.父职位 = this.excelSelectDataPosition[1]
-          this.excelPositionData.父职位组织 = this.excelSingleData.客户名称
+          this.PositionName.部门 = DealerDepartmentList[0]
+          this.PositionName.部门的组织 = this.excelSingleData.客户名称
+          this.PositionName.职位 = DealerPost[i]
+          this.PositionName.父职位 = DealerPost[1]
+          this.PositionName.父职位组织 = this.excelSingleData.客户名称
           switch (i) {
             case 0:
-              this.excelPositionData.父职位 = ''
-              this.excelPositionData.职位类型 = this.PositionName[0]
+              this.PositionName.父职位 = ''
+              this.PositionName.职位类型 = DealerPositionList[0]
               break
             case 1:
-              this.excelPositionData.父职位 = this.excelSelectDataPosition[0]
-              this.excelPositionData.职位类型 = this.PositionName[1]
+              this.PositionName.父职位 = DealerPost[0]
+              this.PositionName.职位类型 = DealerPositionList[1]
               break
             case 2:
-              this.excelPositionData.职位类型 = this.PositionName[1]
+              this.PositionName.职位类型 = DealerPositionList[1]
               break
             case 3:
-              this.excelPositionData.部门 = this.DivisionName[1]
-              this.excelPositionData.职位类型 = this.PositionName[2]
+              this.PositionName.部门 = DealerDepartmentList[1]
+              this.PositionName.职位类型 = DealerPositionList[2]
               break
             case 4:
-              this.excelPositionData.职位类型 = this.PositionName[3]
+              this.PositionName.职位类型 = DealerPositionList[3]
               break
             case 5:
-              this.excelPositionData.职位类型 = this.PositionName[4]
+              this.PositionName.职位类型 = DealerPositionList[4]
               break
             case 6:
-              this.excelPositionData.职位类型 = this.PositionName[3]
+              this.PositionName.职位类型 = DealerPositionList[3]
               break
             default:
-              this.excelPositionData.职位类型 = this.PositionName[5]
+              this.PositionName.职位类型 = DealerPositionList[5]
               break
           }
-          this.Position.push(this.excelPositionData)
+          this.Position.push(this.PositionName)
         }
         for (let i = 0; i < 9; i++) {
-          this.excelEmployeeData = {}
-          this.excelEmployeeData.序号 = this.JEmployee + 1
+          this.EmployeeName = {}
+          this.EmployeeName.序号 = this.JEmployee + 1
           this.JEmployee = this.JEmployee + 1
-          this.excelEmployeeData.姓名 =
-            this.excelSingleData.客户名称 + this.excelSelectDataName[i]
-          this.excelEmployeeData.用户ID =
-            'CD' +
-            this.excelSingleData.客户编码 +
-            this.excelSelectDataAccount[i]
+          this.EmployeeName.姓名 =
+            this.excelSingleData.客户名称 + DealerNameLast[i]
+          this.EmployeeName.用户ID =
+            'CD' + this.excelSingleData.客户编码 + DealerAccountLast[i]
           switch (i) {
             case 0:
-              this.excelEmployeeData.职责 = this.EmployeeName[i]
+              this.EmployeeName.职责 = DealerDutyList[i]
               break
             case 1:
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 1]
+              this.EmployeeName.职责 = DealerDutyList[i - 1]
               break
             case 2:
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 1]
+              this.EmployeeName.职责 = DealerDutyList[i - 1]
               break
             case 3:
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 1]
+              this.EmployeeName.职责 = DealerDutyList[i - 1]
               break
             case 4:
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 1]
+              this.EmployeeName.职责 = DealerDutyList[i - 1]
               break
             case 5:
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 1]
+              this.EmployeeName.职责 = DealerDutyList[i - 1]
               break
             case 6:
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 1]
-              this.excelEmployeeData.姓名 =
-                this.excelSingleData.客户名称 + this.excelSelectDataName[i - 2]
-              this.excelEmployeeData.用户ID =
-                'CD' +
-                this.excelSingleData.客户编码 +
-                this.excelSelectDataAccount[i - 2]
-              // this.excelEmployeeData.职位 = this.excelSelectDataPosition[i]
+              this.EmployeeName.职责 = DealerDutyList[i - 1]
+              this.EmployeeName.姓名 =
+                this.excelSingleData.客户名称 + DealerNameLast[i - 2]
+              this.EmployeeName.用户ID =
+                'CD' + this.excelSingleData.客户编码 + DealerAccountLast[i - 2]
               break
             case 7:
-              this.excelEmployeeData.姓名 =
-                this.excelSingleData.客户名称 + this.excelSelectDataName[i - 2]
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 2]
-              this.excelEmployeeData.用户ID =
-                'CD' +
-                this.excelSingleData.客户编码 +
-                this.excelSelectDataAccount[i - 2]
+              this.EmployeeName.姓名 =
+                this.excelSingleData.客户名称 + DealerNameLast[i - 2]
+              this.EmployeeName.职责 = DealerDutyList[i - 2]
+              this.EmployeeName.用户ID =
+                'CD' + this.excelSingleData.客户编码 + DealerAccountLast[i - 2]
               break
             default:
-              this.excelEmployeeData.姓名 =
-                this.excelSingleData.客户名称 + this.excelSelectDataName[i - 2]
-              this.excelEmployeeData.职责 = this.EmployeeName[i - 2]
-              this.excelEmployeeData.用户ID =
-                'CD' +
-                this.excelSingleData.客户编码 +
-                this.excelSelectDataAccount[i - 2]
+              this.EmployeeName.姓名 =
+                this.excelSingleData.客户名称 + DealerNameLast[i - 2]
+              this.EmployeeName.职责 = DealerDutyList[i - 2]
+              this.EmployeeName.用户ID =
+                'CD' + this.excelSingleData.客户编码 + DealerAccountLast[i - 2]
               break
           }
-          this.excelEmployeeData.职位 = this.excelSelectDataPosition[i]
+          this.EmployeeName.职位 = DealerPost[i]
           switch (i) {
             case 7:
-              this.excelEmployeeData.职位 = this.excelSelectDataPosition[i - 1]
+              this.EmployeeName.职位 = DealerPost[i - 1]
               break
             case 8:
-              this.excelEmployeeData.职位 = this.excelSelectDataPosition[i - 1]
+              this.EmployeeName.职位 = DealerPost[i - 1]
               break
           }
-          // this.excelEmployeeData.职责 = this.EmployeeName[i]
-          this.excelEmployeeData.组织 = this.excelSingleData.客户名称
-          this.Employee.push(this.excelEmployeeData)
-          this.excelUserPwdTmp.push(this.excelEmployeeData)
-          // this.excelEmployeeData.密码 = 'dfcv88!'
+          this.EmployeeName.组织 = this.excelSingleData.客户名称
+          this.Employee.push(this.EmployeeName)
+          this.excelUserPwdTmp.push(this.EmployeeName)
         }
         for (let i = 0; i < 7; i++) {
-          this.excelSelectData = {}
-          this.excelSelectData.域帐号名 =
-            'CD' +
-            this.excelSingleData.客户编码 +
-            this.excelSelectDataAccount[i]
-          this.excelSelectData.姓名 =
-            this.excelSingleData.客户名称 + this.excelSelectDataName[i]
+          this.NewAccountName = {}
+          this.NewAccountName.域帐号名 =
+            'CD' + this.excelSingleData.客户编码 + DealerAccountLast[i]
+          this.NewAccountName.姓名 =
+            this.excelSingleData.客户名称 + DealerNameLast[i]
           if (i === 6) {
-            this.excelSelectData.职务 = this.excelSelectDataPosition[i + 1]
+            this.NewAccountName.职务 = DealerPost[i + 1]
           } else {
-            this.excelSelectData.职务 = this.excelSelectDataPosition[i]
+            this.NewAccountName.职务 = DealerPost[i]
           }
-          this.excelSelectData.单位名称 = this.excelSingleData.客户名称
-          this.excelSelectData.所属组织代码 =
+          this.NewAccountName.单位名称 = this.excelSingleData.客户名称
+          this.NewAccountName.所属组织代码 =
             '000' + this.excelSingleData.客户编码
-          this.excelDataSaleStandard.push(this.excelSelectData)
-          // console.log(this.excelSelectDataAccount[i])
+          this.excelDataSaleStandard.push(this.NewAccountName)
+          // console.log(DealerAccountLast[i])
         }
         if (this.excelUserPwdTmp.length > 0) {
           this.excelUserPwdTmp.splice(6, 1)
@@ -369,19 +320,83 @@ export default {
       } else {
         alert('客户编码不在列表中，请输入正确客户编码！')
       }
-      // for (let i = 0; i <= this.excelData.length; i++) {
-      //   if (Number(this.excelSelect) === this.excelData[i]['客户编码']) {
-      //     let a = this.excelData[i]['客户编码']
-      //     console.log(a)
-      // this.excelDataSaleStandard.map(value => {
-      //   value.account = 'CD' + excelSingleData.客户编码 + value.account
-      //   value.name = excelSingleData.客户名称 + value.name
-      //   value.Company = excelSingleData.客户名称
-      //   value.Organization = '000' + excelSingleData.客户编码
-      // })
-      // this.excelExportData.push(this.excelDataSaleStandard)
-      // console.log(this.excelDataSaleStandard)
-      // this.excelDataSaleStandard = []
+    },
+    handleSelectStation() {
+      this.excelSingleData = {}
+      this.excelSingleData = this.tableData.find(
+        item => item.客户编码 === Number(this.excelSelect)
+      )
+      if (this.excelSingleData !== undefined && this.excelSingleData !== null) {
+        this.excelSelectList.push(this.excelSingleData)
+        for (let i = 0; i < StationDepartmentList.length; i++) {
+          this.DivisionName = {}
+          this.DivisionName.序号 = this.JDivision + 1
+          this.JDivision = this.JDivision + 1
+          this.DivisionName.部门名称 = StationDepartmentList[i]
+          this.DivisionName.场所 = this.excelSingleData.客户编码
+          this.DivisionName.父部门名称 = this.excelSingleData.客户名称
+          this.DivisionName.父部门组织 = this.excelSingleData.客户名称
+          this.DivisionName.部门类型 = '服务站部门'
+          this.Division.push(this.DivisionName)
+        }
+        if (this.partsChecked) {
+          // 配件专营店账号权限
+        } else {
+          // 服务站账号权限
+          for (let i = 0; i < StationPost.length; i++) {
+            this.PositionName = {}
+            this.PositionName.序号 = this.JPosition + 1
+            this.JPosition = this.JPosition + 1
+            this.PositionName.部门 = StationDepartmentList[0]
+            this.PositionName.部门的组织 = this.excelSingleData.客户名称
+            this.PositionName.职位 = StationPost[i]
+            this.PositionName.父职位 = StationPost[1]
+            this.PositionName.父职位组织 = this.excelSingleData.客户名称
+            this.PositionName.职位类型 = StationPositionList[i]
+            this.Position.push(this.PositionName)
+          }
+          for (let i = 0; i < StationAccountLast.length; i++) {
+            this.EmployeeName = {}
+            this.EmployeeName.序号 = this.JEmployee + 1
+            this.JEmployee = this.JEmployee + 1
+            this.EmployeeName.姓名 =
+              this.excelSingleData.客户名称 + StationNameLast[i]
+            this.EmployeeName.用户ID =
+              'CD' + this.excelSingleData.客户编码 + StationAccountLast[i]
+            this.EmployeeName.职责 = StationDutyList[i]
+            this.EmployeeName.职位 = StationPost[i]
+            this.EmployeeName.组织 = this.excelSingleData.客户名称
+            this.Employee.push(this.EmployeeName)
+            this.excelUserPwdTmp.push(this.EmployeeName)
+          }
+          for (let i = 0; i < StationAccountLast; i++) {
+            this.NewAccountName = {}
+            this.NewAccountName.域帐号名 =
+              'CD' + this.excelSingleData.客户编码 + StationAccountLast[i]
+            this.NewAccountName.姓名 =
+              this.excelSingleData.客户名称 + StationNameLast[i]
+            this.NewAccountName.单位名称 = this.excelSingleData.客户名称
+            this.NewAccountName.所属组织代码 =
+              '000' + this.excelSingleData.客户编码
+            this.excelDataSaleStandard.push(this.NewAccountName)
+          }
+          if (this.excelUserPwdTmp.length > 0) {
+            // for (let i = 0; i < this.excelUserPwdTmp.length; i++) {
+            //   delete this.excelUserPwdTmp[i].职责
+            // }
+            // 添加密码字段
+            // this.excelUserPwdTmp.forEach(value => {
+            //   value['密码'] = this.excelSelectPwd
+            // })
+            this.excelUserPwd.push(this.excelUserPwdTmp)
+            this.excelUserPwdTmp = []
+          } else {
+            alert('没有选中导出给网员的信息！')
+          }
+        }
+      } else {
+        alert('客户编码不在列表中，请输入正确客户编码！')
+      }
     }
   }
 }

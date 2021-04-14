@@ -13,12 +13,16 @@ export function readExcelToJson(file) {
     reader.onload = e => {
       let data = new Uint8Array(e.target.result)
       let workbook = XLSX.read(data, { type: 'array' })
-      //  console.log("workbook: ", workbook);
+      console.log('workbook: ', workbook)
 
       // 将Excel 第一个sheet内容转为json格式
       let worksheet = workbook.Sheets[workbook.SheetNames[0]]
-      let json = XLSX.utils.sheet_to_json(worksheet)
-      //   console.log("jsonExcel:", jsonExcel);
+      console.log('worksheet: ', worksheet)
+      const sheet2JSONOpts = {
+        defval: '' // 给defval赋值为空的字符串，解决如果列的值为空不显示列的情况
+      }
+      let json = XLSX.utils.sheet_to_json(worksheet, sheet2JSONOpts)
+      console.log('jsonExcel:', json)
       resolve(json)
     }
     reader.readAsArrayBuffer(file.raw)
