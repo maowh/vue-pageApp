@@ -379,6 +379,7 @@ export default {
             StationAccountLast[10] + this.excelSingleData.服务代码
           this.NewAccountName.姓名 =
             this.excelSingleData.客户名称 + StationNameLast[10]
+          this.NewAccountName.职务 = StationPost[10]
           this.NewAccountName.单位名称 = this.excelSingleData.客户名称
           this.NewAccountName.所属组织代码 =
             '000' + this.excelSingleData.客户编码
@@ -417,6 +418,7 @@ export default {
               'CD' + this.excelSingleData.客户编码 + StationAccountLast[i]
             this.NewAccountName.姓名 =
               this.excelSingleData.客户名称 + StationNameLast[i]
+            this.NewAccountName.职务 = StationPost[i]
             this.NewAccountName.单位名称 = this.excelSingleData.客户名称
             this.NewAccountName.所属组织代码 =
               '000' + this.excelSingleData.客户编码
@@ -428,9 +430,9 @@ export default {
           //   delete this.excelUserPwdTmp[i].职责
           // }
           // 添加密码字段
-          // this.excelUserPwdTmp.forEach(value => {
-          //   value['密码'] = this.excelSelectPwd
-          // })
+          this.excelUserPwdTmp.forEach(value => {
+            value['密码'] = this.excelSelectPwd
+          })
           this.excelUserPwd.push(this.excelUserPwdTmp)
           this.excelUserPwdTmp = []
         } else {
