@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>vue动画</title>
+    <script src="./vue.js"></script>
+    <style>
+      .fade-enter {
+        opacity: 0;
+      }
+      .fade-leave-to {
+        opacity: 0;
+      }
+      .fade-enter-active {
+        transition: opacity 3s;
+      }
+      .fade-leave-active {
+        transition: opacity 3s;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="vm">
+      <transition name="fade">
+        <div v-if="isShow">淡入淡出效果</div>
+      </transition>
+      <button type="submit" @click="submit">改变</button>
+    </div>
+    <script>
+      var vm = new Vue({
+        el: '#vm',
+        data: {
+          isShow: true,
+        },
+        methods: {
+          submit() {
+            this.isShow = !this.isShow
+          },
+        },
+      })
+    </script>
+  </body>
+</html>

@@ -19,25 +19,28 @@
         >下载发给用户CRM账号</el-button
       >
     </div>
-    <div style="display:flex;">
-      <p>选择SAP编码</p>
-      <div>
-        <el-input style="width:100px" v-model="excelSelect"></el-input>
-        <el-button type="primary" @click="handleSelectDealer"
+    <div style="display:flex;flex-direction: row;flex-direction: column;">
+      <div style="display:flex;margin:5px;padding:5px;align-items:center">
+        <p>选择SAP编码：</p>
+        <el-input
+          style="width:100px;margin-left: 5px"
+          v-model="excelSelect"
+        ></el-input>
+        <el-button
+          type="primary"
+          @click="handleSelectDealer"
+          style="margin-left: 5px"
           >添加经销商导出单位</el-button
         >
         <el-button type="primary" @click="handleSelectStation"
           >添加服务站导出单位</el-button
-        ><el-checkbox v-model="partsChecked">是否配件专营店</el-checkbox>
+        >
+        <div style="margin-left: 5px">
+          <el-checkbox v-model="partsChecked">是否配件专营店</el-checkbox>
+        </div>
       </div>
-
-      <ul>
-        <li v-for="item in excelSelectList" :key="item.客户编码">
-          {{ item.客户编码 }}
-        </li>
-      </ul>
-      <div>
-        <p>选择导出网员类型</p>
+      <div style="display:flex;margin:5px;padding:5px;align-items:center">
+        <p>选择导出网员类型：</p>
         <el-select @change="selectChange" v-model="selectData">
           <!-- <el-option disabled>---请选择---</el-option> -->
           <el-option
@@ -47,15 +50,24 @@
             :value="item"
           ></el-option
         ></el-select>
+        <div style="margin-left: 5px"><p>输入CRM账号密码：</p></div>
+        <div>
+          <el-input style="width:100px" v-model="excelSelectPwd"></el-input>
+        </div>
       </div>
-
-      <p>输入CRM账号密码：</p>
-      <div>
-        <el-input style="width:100px" v-model="excelSelectPwd"></el-input>
+      <el-button type="primary" @click="handleSelectCz" style="width: 10%"
+        >重置</el-button
+      >
+      <div style="display:flex;" v-if="excelSelectList.length > 0">
+        <p>已选择的网员：</p>
+        <ul>
+          <li v-for="item in excelSelectList" :key="item.客户编码">
+            {{ item.客户编码 }}
+          </li>
+        </ul>
       </div>
     </div>
-
-    <el-table :data="tableData" border style="width: 100%">
+    <el-table :data="tableData" border style="width: 80%">
       <el-table-column
         v-for="key in Object.keys(tableData[0] || {})"
         :key="key"
@@ -441,6 +453,18 @@ export default {
       } else {
         alert('客户编码不在列表中，请输入正确客户编码！')
       }
+    },
+    handleSelectCz() {
+      this.excelSelect = ''
+      this.Employee = []
+      this.Position = []
+      this.Division = []
+      this.excelDataSaleStandard = []
+      this.excelUserPwd = []
+      this.excelSelectList = []
+      this.excelDataSaleStandardList = []
+      this.excelExportData = []
+      this.excelSingleData = {}
     }
   }
 }
