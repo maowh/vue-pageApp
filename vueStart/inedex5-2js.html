@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>vue动画js</title>
+
+    <script src="./vue.js"></script>
+    <script src="./velocity.min.js"></script>
+    <!-- <script src="http://files.cnblogs.com/files/xiaohuochai/velocity.min.js"></script> -->
+
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" /> -->
+    <style></style>
+  </head>
+  <body>
+    <div id="vm">
+      <transition name="fade" @before-enter="handleBeforeEnter" @enter="handleEnter" @after-enter="handleAfterEnter"><div v-show="show">hello world</div></transition>
+      <button @click="toggle">切换</button>
+    </div>
+    <script>
+      var vm = new Vue({
+        el: '#vm',
+        data: {
+          show: true,
+        },
+        methods: {
+          toggle() {
+            this.show = !this.show
+          },
+          // 动画执行之前el表示transition包裹的div标签内容
+          handleBeforeEnter(el) {
+            el.style.opacity = 0
+          },
+          // 动画执行接收2个参数，在beforeenter后面执行
+          handleEnter(el, done) {
+            Velocity(
+              el,
+              {
+                opacity: 1,
+              },
+              {
+                duration: 1000,
+                complete: done,
+              }
+            )
+          },
+          handleAfterEnter(el) {
+            alert('动画结束')
+          },
+        },
+      })
+    </script>
+  </body>
+</html>
