@@ -8,6 +8,7 @@ import fastclick from 'fastclick'
 import './assets/styles/reset.css'
 // 1像素边框解决文件，用户高分辨率屏幕将像素边框自动变大
 import './assets/styles/border.css'
+import './assets/styles/iconfont.css'
 
 Vue.config.productionTip = false
 fastclick.attach(document.body)
