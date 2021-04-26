@@ -402,12 +402,77 @@ export default {
             this.PositionName = {}
             this.PositionName.序号 = this.JPosition + 1
             this.JPosition = this.JPosition + 1
-            this.PositionName.部门 = StationDepartmentList[0]
-            this.PositionName.部门的组织 = this.excelSingleData.客户名称
+            this.PositionName.部门 = StationDepartmentList[1]
+            switch (i) {
+              case 5:
+                this.PositionName.部门 = StationDepartmentList[0]
+                break
+              case 6:
+                this.PositionName.部门 = StationDepartmentList[2]
+                break
+              case 7:
+                this.PositionName.部门 = StationDepartmentList[2]
+                break
+            }
+            this.PositionName.部门的组织 = this.excelSingleData.客户名称 + 'FW'
             this.PositionName.职位 = StationPost[i]
-            this.PositionName.父职位 = StationPost[1]
-            this.PositionName.父职位组织 = this.excelSingleData.客户名称
-            this.PositionName.职位类型 = StationPositionList[i]
+            this.PositionName.父职位 = StationPost[4]
+            switch (i) {
+              case 4:
+                this.PositionName.父职位 = ''
+                break
+              case 5:
+                this.PositionName.父职位 = ''
+                break
+              case 6:
+                this.PositionName.父职位 = ''
+                break
+              case 7:
+                this.PositionName.父职位 = StationPost[6]
+                break
+              case 10:
+                this.PositionName.父职位 = ''
+                break
+            }
+            this.PositionName.父职位组织 = this.excelSingleData.客户名称 + 'FW'
+            switch (i) {
+              case 0:
+                this.PositionName.职位类型 = StationPositionList[1]
+                break
+              case 1:
+                this.PositionName.职位类型 = StationPositionList[1]
+                break
+              case 2:
+                this.PositionName.职位类型 = StationPositionList[2]
+                break
+              case 3:
+                this.PositionName.职位类型 = StationPositionList[3]
+                break
+              case 4:
+                this.PositionName.职位类型 = StationPositionList[0]
+                break
+              case 5:
+                this.PositionName.职位类型 = StationPositionList[7]
+                break
+              case 6:
+                this.PositionName.职位类型 = StationPositionList[8]
+                break
+              case 7:
+                this.PositionName.职位类型 = StationPositionList[8]
+                break
+              case 8:
+                this.PositionName.职位类型 = StationPositionList[4]
+                break
+              case 9:
+                this.PositionName.职位类型 = StationPositionList[5]
+                break
+              case 10:
+                this.PositionName.职位类型 = StationPositionList[6]
+                break
+              default:
+                this.PositionName.职位类型 = StationPositionList[1]
+                break
+            }
             this.Position.push(this.PositionName)
           }
           for (let i = 0; i < StationAccountLast.length; i++) {
@@ -418,16 +483,24 @@ export default {
               this.excelSingleData.客户名称 + StationNameLast[i]
             this.EmployeeName.用户ID =
               'CD' + this.excelSingleData.客户编码 + StationAccountLast[i]
+            if (i === StationAccountLast.length - 1) {
+              this.EmployeeName.用户ID =
+                StationAccountLast[i] + this.excelSingleData.服务代码
+            }
             this.EmployeeName.职责 = StationDutyList[i]
             this.EmployeeName.职位 = StationPost[i]
-            this.EmployeeName.组织 = this.excelSingleData.客户名称
+            this.EmployeeName.组织 = this.excelSingleData.客户名称 + 'FW'
             this.Employee.push(this.EmployeeName)
             this.excelUserPwdTmp.push(this.EmployeeName)
           }
-          for (let i = 0; i < StationAccountLast; i++) {
+          for (let i = 0; i < StationAccountLast.length; i++) {
             this.NewAccountName = {}
             this.NewAccountName.域帐号名 =
               'CD' + this.excelSingleData.客户编码 + StationAccountLast[i]
+            if (i === StationAccountLast.length - 1) {
+              this.NewAccountName.域帐号名 =
+                StationAccountLast[i] + this.excelSingleData.服务代码
+            }
             this.NewAccountName.姓名 =
               this.excelSingleData.客户名称 + StationNameLast[i]
             this.NewAccountName.职务 = StationPost[i]

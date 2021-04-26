@@ -53,9 +53,9 @@ export function saveJsonToExcel(data, filename) {
       }
     }
   } else {
-    console.log('1')
     console.log(data.length)
     sheet = XLSX.utils.json_to_sheet(data[0])
+    console.log(sheet)
     workbook = {
       SheetNames: ['sheet1'],
       Sheets: {
